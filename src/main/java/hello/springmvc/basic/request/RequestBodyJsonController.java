@@ -6,8 +6,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,5 +65,27 @@ public class RequestBodyJsonController {
         log.info("username = {}, age = {}", helloData.getUsername(), helloData.getAge());
 
         return "ok v3";
+    }
+
+    @ResponseBody
+    @PostMapping("/request-body-json-v4")
+    public String requestBodyJsonV4(HttpEntity<HelloData> httpEntity
+    ) throws IOException, ServletException {
+
+        HelloData data = httpEntity.getBody();
+
+        log.info("username = {}, age = {}",data.getUsername(), data.getAge());
+
+        return "ok";
+    }
+
+    @ResponseBody // 요청이 끝난 데이터 객체를 다시 json 형태로 반환해서 return
+    @PostMapping("/request-body-json-v5")
+    public HelloData requestBodyJsonV5(@RequestBody HelloData data // 요청 시 json 데이터를 http 컨버터를 이용해 객체로 변환하여 html body 전달
+    ) throws IOException, ServletException {
+//        HelloData data = httpEntity.getBody();
+        log.info("username = {}, age = {}", data.getUsername(), data.getAge());
+
+        return data; // json 형태의 리턴값
     }
 }
